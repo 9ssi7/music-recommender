@@ -1,0 +1,52 @@
+type UserListDto {
+  id: UUID!
+  userName: String!
+  email: String!
+}
+
+input CreateUserInput {
+  email: String!
+  userName: String!
+  favoriteGenres: [String!]!
+}
+
+type GenreListDto {
+  id: UUID!
+  name: String!
+}
+
+input CreateGenreInput {
+  name: String!
+}
+
+type SongListDto {
+  id: UUID!
+  title: String!
+  artist: String!
+}
+
+input CreateSongInput {
+  title: String!
+  artist: String!
+}
+
+type Query {
+  user(email: String!): UserListDto!
+  genres: [GenreListDto!]!
+  genre(id: UUID!): GenreListDto!
+  songs: [SongListDto!]!
+  song(id: UUID!): SongListDto!
+  songsByGenre(genreId: UUID!): [SongListDto!]!
+  songsRecommendation(userId: UUID!): [SongListDto!]!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): UserListDto!
+  createGenre(input: CreateGenreInput!): GenreListDto!
+  deleteGenre(id: UUID!): Boolean!
+  createSong(input: CreateSongInput!): SongListDto!
+  deleteSong(id: UUID!): Boolean!
+  markSongAsListened(userId: UUID!, songId: UUID!): Boolean!
+}
+
+scalar UUID
