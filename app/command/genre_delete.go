@@ -19,12 +19,11 @@ type GenreDeleteResult struct {
 type GenreDeleteHandler cqrs.HandlerFunc[GenreDeleteCommand, *GenreDeleteResult]
 
 func NewGenreDeleteHandler(repo genre.Repo) GenreDeleteHandler {
-	return func(ctx context.Context, Command GenreDeleteCommand) (*GenreDeleteResult, *i18np.Error) {
-		err := repo.Delete(ctx, Command.Id.String())
+	return func(ctx context.Context, cmd GenreDeleteCommand) (*GenreDeleteResult, *i18np.Error) {
+		err := repo.Delete(ctx, cmd.Id.String())
 		if err != nil {
 			return nil, err
 		}
 		return &GenreDeleteResult{}, nil
 	}
 }
- 

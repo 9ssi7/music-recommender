@@ -19,9 +19,9 @@ type GenreCreateResult struct {
 type GenreCreateHandler cqrs.HandlerFunc[GenreCreateCommand, *GenreCreateResult]
 
 func NewGenreCreateHandler(repo genre.Repo) GenreCreateHandler {
-	return func(ctx context.Context, Command GenreCreateCommand) (*GenreCreateResult, *i18np.Error) {
+	return func(ctx context.Context, cmd GenreCreateCommand) (*GenreCreateResult, *i18np.Error) {
 		dto, err := repo.Create(ctx, genre.CreateDto{
-			Name: Command.Name,
+			Name: cmd.Name,
 		})
 		if err != nil {
 			return nil, err
