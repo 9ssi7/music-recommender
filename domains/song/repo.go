@@ -77,11 +77,11 @@ func (r *repo) ListUserRecommendation(ctx context.Context, userId uuid.UUID) ([]
 	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 	defer session.Close(ctx)
 	query := `
-		MATCH (u:User {id: "user_id"})-[:LISTENED_TO]->(s:Song)<-[:HAS_GENRE]-(g:Genre)<-[:HAS_GENRE]-(recommendedSong:Song)
-		WHERE NOT (u)-[:LISTENED_TO]->(recommendedSong) AND recommendedSong <> s
-		RETURN recommendedSong.id, recommendedSong.title, recommendedSong.artist, COUNT(DISTINCT g) AS commonGenres
-		ORDER BY commonGenres DESC
-		LIMIT 10
+	MATCH (u:User {id: $userId})-[:LISTENED]->(s:Song)-[:HAS_GENRE]->(g:Genre)<-[:HAS_GENRE]-(recommendedSong:Song)
+	WHERE NOT (u)-[:LISTENED]->(recommendedSong)
+	RETURN recommendedSong.id, recommendedSong.title, recommendedSong.artist, COUNT(DISTINCT g) AS commonGenres
+	ORDER BY COUNT(DISTINCT g) DESC, recommendedSong.artist
+	LIMIT 10
 	`
 	args := map[string]interface{}{"userId": userId.String()}
 	record, err := session.Run(ctx, query, args)
@@ -125,7 +125,9 @@ func (r *repo) Create(ctx context.Context, dto CreateDto) (*ListDto, *i18np.Erro
 	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(ctx)
 	query := `
+		MATCH (g:Genre {id: $genreId})
 		CREATE (s:Song {id: $id, title: $title, artist: $artist})
+		CREATE (s)-[:HAS_GENRE]->(g)
 		RETURN s.id, s.title, s.artist
 	`
 	_, err := session.Run(ctx, query, dto.Build())
@@ -158,8 +160,7 @@ func (r *repo) MarkListened(ctx context.Context, userId, songId uuid.UUID) *i18n
 	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(ctx)
 	query := `
-		MATCH (u:User {id: $userId})
-		MATCH (s:Song {id: $songId})
+		MATCH (u:User {id: $userId}), (s:Song {id: $songId})
 		MERGE (u)-[r:LISTENED]->(s)
 		SET r.listenedAt = datetime()
 	`

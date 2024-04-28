@@ -58,8 +58,9 @@ func (r *mutationResolver) DeleteGenre(ctx context.Context, id uuid.UUID) (bool,
 // CreateSong is the resolver for the createSong field.
 func (r *mutationResolver) CreateSong(ctx context.Context, input model.CreateSongInput) (*model.SongListDto, error) {
 	res, err := r.app.Commands.SongCreate(ctx, command.SongCreateCommand{
-		Title:  input.Title,
-		Artist: input.Artist,
+		Title:   input.Title,
+		Artist:  input.Artist,
+		GenreId: input.GenreID,
 	})
 	if err != nil {
 		return nil, err

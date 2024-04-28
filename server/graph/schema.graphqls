@@ -28,6 +28,7 @@ type SongListDto {
 input CreateSongInput {
   title: String!
   artist: String!
+  genreId: UUID!
 }
 
 type Query {

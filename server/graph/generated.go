@@ -3733,7 +3733,7 @@ func (ec *executionContext) unmarshalInputCreateSongInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "artist"}
+	fieldsInOrder := [...]string{"title", "artist", "genreId"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3754,6 +3754,13 @@ func (ec *executionContext) unmarshalInputCreateSongInput(ctx context.Context, o
 				return it, err
 			}
 			it.Artist = data
+		case "genreId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("genreId"))
+			data, err := ec.unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.GenreID = data
 		}
 	}
 

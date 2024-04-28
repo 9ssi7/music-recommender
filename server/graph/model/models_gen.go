@@ -11,8 +11,9 @@ type CreateGenreInput struct {
 }
 
 type CreateSongInput struct {
-	Title  string `json:"title"`
-	Artist string `json:"artist"`
+	Title   string    `json:"title"`
+	Artist  string    `json:"artist"`
+	GenreID uuid.UUID `json:"genreId"`
 }
 
 type CreateUserInput struct {
