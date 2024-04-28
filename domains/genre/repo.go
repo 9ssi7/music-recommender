@@ -73,18 +73,14 @@ func (r *repo) Create(ctx context.Context, dto CreateDto) (*ListDto, *i18np.Erro
 		CREATE (g:Genre {id: $id, name: $name})
 		RETURN g.id, g.name
 	`
-	record, err := session.Run(ctx, query, dto.Build())
+	_, err := session.Run(ctx, query, dto.Build())
 	if err != nil {
 		return nil, i18np.NewError(Messages.CreateFailed)
 	}
-	if !record.Next(ctx) {
-		return nil, nil
-	}
-	var listDto ListDto
-	if err := cypher.Parse(record.Record(), "g", &listDto); err != nil {
-		return nil, i18np.NewError(Messages.ParseFailed)
-	}
-	return &listDto, nil
+	return &ListDto{
+		Id:   dto.Id,
+		Name: dto.Name,
+	}, nil
 }
 
 func (r *repo) Delete(ctx context.Context, id string) *i18np.Error {

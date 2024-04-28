@@ -9,13 +9,15 @@ type ListDto struct {
 }
 
 type CreateDto struct {
-	Title  string `json:"title" neo4j:"title"`
-	Artist string `json:"artist" neo4j:"artist"`
+	Id     uuid.UUID `json:"-" neo4j:"id"`
+	Title  string    `json:"title" neo4j:"title"`
+	Artist string    `json:"artist" neo4j:"artist"`
 }
 
 func (dto *CreateDto) Build() map[string]interface{} {
+	dto.Id = uuid.New()
 	return map[string]interface{}{
-		"id":     uuid.New(),
+		"id":     dto.Id.String(),
 		"title":  dto.Title,
 		"artist": dto.Artist,
 	}

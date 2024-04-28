@@ -39,18 +39,15 @@ func (r *repo) Create(ctx context.Context, dto CreateDto) (*ListDto, *i18np.Erro
 		CREATE (u)-[:FAVORITE_GENRE]->(g)
 		RETURN u.id, u.userName, u.email
 	`
-	record, err := session.Run(ctx, query, dto.Build())
+	_, err := session.Run(ctx, query, dto.Build())
 	if err != nil {
 		return nil, i18np.NewError(Messages.CreateFailed)
 	}
-	if !record.Next(ctx) {
-		return nil, nil
-	}
-	var listDto ListDto
-	if err := cypher.Parse(record.Record(), "u", &listDto); err != nil {
-		return nil, i18np.NewError(Messages.ParseFailed)
-	}
-	return &listDto, nil
+	return &ListDto{
+		Id:       dto.Id,
+		UserName: dto.UserName,
+		Email:    dto.Email,
+	}, nil
 }
 
 func (r *repo) GetByEmail(ctx context.Context, email string) (*ListDto, *i18np.Error) {

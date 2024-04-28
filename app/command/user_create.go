@@ -28,7 +28,7 @@ func NewUserCreateHandler(repo user.Repo) UserCreateHandler {
 			genres[i] = uuid.MustParse(genre)
 		}
 		dto, err := repo.Create(ctx, user.CreateDto{
-			UserName:       cmd.Email,
+			UserName:       cmd.UserName,
 			Email:          cmd.Email,
 			FavoriteGenres: genres,
 		})
