@@ -7,10 +7,16 @@ import (
 
 type Commands struct {
 	UserCreate command.UserCreateHandler
+
+	GenreCreate command.GenreCreateHandler
+	GenreDelete command.GenreDeleteHandler
 }
 
 type Queries struct {
 	UserGetByEmail query.UserGetByEmailHandler
+
+	GenreList query.GenreListHandler
+	GenreView query.GenreViewHandler
 }
 
 type App struct {
