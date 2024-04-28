@@ -1,0 +1,18 @@
+# Genre Translation
+genre_create_failed = "Genre creation failed"
+genre_fetch_failed = "Genre fetch failed"
+genre_parse_failed = "Genre parse failed"
+genre_delete_failed = "Genre delete failed"
+
+# Song Translation
+song_create_failed = "Song creation failed"
+song_fetch_failed = "Song fetch failed"
+song_parse_failed = "Song parse failed"
+song_delete_failed = "Song delete failed"
+song_mark_listened_failed = "Song mark listened failed"
+
+# User Translation
+user_email_already_exists = "User email already exists"
+user_create_failed = "User creation failed"
+user_fetch_failed = "User fetch failed"
+user_parse_failed = "User parse failed"
