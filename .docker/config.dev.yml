@@ -1,0 +1,13 @@
+neo4j:
+  username: neo4j
+  password: music-recommender
+  uri: neo4j://mr-neo4j:7687
+
+api:
+  host: localhost
+  port: 4001
+
+graphql:
+  host: localhost
+  port: 4000
+  protocol: http

@@ -1,0 +1,49 @@
+version: "3"
+name: music-recommender
+services:
+  mr-neo4j:
+    image: neo4j:5.19.0-community
+    container_name: mr-neo4j
+    volumes:
+      - music-recommender_db_data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/music-recommender
+    networks:
+      - music-recommender
+
+  mr-redis:
+    image: "redis:latest"
+    container_name: "mr-redis"
+    ports:
+      - "6379:6379"
+    networks:
+      - music-recommender
+
+  mr-api:
+    build:
+      context: ../
+      dockerfile: ./Dockerfile.dev
+    container_name: "mr-api"
+    restart: always
+    volumes:
+      - ./config.dev.yml:/app/config.yml
+      - ../:/app
+    networks:
+      - music-recommender
+    ports:
+      - 4000:4000
+    depends_on:
+      - mr-neo4j
+      - mr-redis
+
+volumes:
+  music-recommender_db_data:
+    external: false
+
+networks:
+  music-recommender:
+    name: music-recommender_network
+    driver: bridge
