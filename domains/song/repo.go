@@ -2,6 +2,7 @@ package song
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/9ssi7/music-recommender/pkg/cypher"
 	"github.com/cilloparch/cillop/i18np"
@@ -56,7 +57,7 @@ func (r *repo) ListByGenre(ctx context.Context, genreId uuid.UUID) ([]ListDto, *
 		MATCH (g:Genre {id: $genreId})-[:HAS]->(s:Song)
 		RETURN s.id, s.title, s.artist
 	`
-	args := map[string]interface{}{"genreId": genreId}
+	args := map[string]interface{}{"genreId": genreId.String()}
 	record, err := session.Run(ctx, query, args)
 	if err != nil {
 		return nil, i18np.NewError(Messages.FetchFailed)
@@ -82,7 +83,7 @@ func (r *repo) ListUserRecommendation(ctx context.Context, userId uuid.UUID) ([]
 		ORDER BY commonGenres DESC
 		LIMIT 10
 	`
-	args := map[string]interface{}{"userId": userId}
+	args := map[string]interface{}{"userId": userId.String()}
 	record, err := session.Run(ctx, query, args)
 	if err != nil {
 		return nil, i18np.NewError(Messages.FetchFailed)
@@ -105,7 +106,7 @@ func (r *repo) View(ctx context.Context, id uuid.UUID) (*ListDto, *i18np.Error) 
 		MATCH (s:Song {id: $id})
 		RETURN s.id, s.title, s.artist
 	`
-	args := map[string]interface{}{"id": id}
+	args := map[string]interface{}{"id": id.String()}
 	record, err := session.Run(ctx, query, args)
 	if err != nil {
 		return nil, i18np.NewError(Messages.FetchFailed)
@@ -145,7 +146,7 @@ func (r *repo) Delete(ctx context.Context, id uuid.UUID) *i18np.Error {
 		MATCH (s:Song {id: $id})
 		DETACH DELETE s
 	`
-	args := map[string]interface{}{"id": id}
+	args := map[string]interface{}{"id": id.String()}
 	_, err := session.Run(ctx, query, args)
 	if err != nil {
 		return i18np.NewError(Messages.DeleteFailed)
@@ -162,9 +163,10 @@ func (r *repo) MarkListened(ctx context.Context, userId, songId uuid.UUID) *i18n
 		MERGE (u)-[r:LISTENED]->(s)
 		SET r.listenedAt = datetime()
 	`
-	args := map[string]interface{}{"userId": userId, "songId": songId}
+	args := map[string]interface{}{"userId": userId.String(), "songId": songId.String()}
 	_, err := session.Run(ctx, query, args)
 	if err != nil {
+		fmt.Println(err)
 		return i18np.NewError(Messages.MarkListenedFailed)
 	}
 	return nil

@@ -21,7 +21,7 @@ type SongMarkListenedHandler cqrs.HandlerFunc[SongMarkListenedCommand, *SongMark
 
 func NewSongMarkListenedHandler(repo song.Repo) SongMarkListenedHandler {
 	return func(ctx context.Context, cmd SongMarkListenedCommand) (*SongMarkListenedResult, *i18np.Error) {
-		err := repo.MarkListened(ctx, cmd.Id, cmd.UserId)
+		err := repo.MarkListened(ctx, cmd.UserId, cmd.Id)
 		if err != nil {
 			return nil, err
 		}
